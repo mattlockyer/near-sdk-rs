@@ -46,17 +46,3 @@ impl NFTContractMetadata {
         }
     }
 }
-
-impl TokenMetadata {
-    pub fn assert_valid(&self) {
-        require!(self.media.is_some() == self.media_hash.is_some());
-        if let Some(media_hash) = &self.media_hash {
-            require!(media_hash.0.len() == 32, "Media hash has to be 32 bytes");
-        }
-
-        require!(self.reference.is_some() == self.reference_hash.is_some());
-        if let Some(reference_hash) = &self.reference_hash {
-            require!(reference_hash.0.len() == 32, "Reference hash has to be 32 bytes");
-        }
-    }
-}
