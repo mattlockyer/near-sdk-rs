@@ -131,15 +131,7 @@ impl NonFungibleToken {
                     title: Some("a".repeat(64)),
                     description: Some("a".repeat(64)),
                     media: Some("a".repeat(64)),
-                    media_hash: Some(Base64VecU8::from("a".repeat(64).as_bytes().to_vec())),
                     copies: Some(1),
-                    issued_at: None,
-                    expires_at: None,
-                    starts_at: None,
-                    updated_at: None,
-                    extra: None,
-                    reference: None,
-                    reference_hash: None,
                 },
             );
         }
