@@ -1,6 +1,6 @@
 use super::{ArgInfo, BindgenArgType, InitAttr, MethodType, SerializerAttr, SerializerType};
+use proc_macro2::Span;
 use quote::ToTokens;
-use syn::export::Span;
 use syn::spanned::Spanned;
 use syn::{Attribute, Error, FnArg, Ident, Receiver, ReturnType, Signature};
 
@@ -105,7 +105,7 @@ impl AttrSigInfo {
 
         if let Some(ref receiver) = receiver {
             if matches!(method_type, MethodType::Regular) {
-                if receiver.mutability.is_none() {
+                if receiver.mutability.is_none() || receiver.reference.is_none() {
                     method_type = MethodType::View;
                 }
             } else {

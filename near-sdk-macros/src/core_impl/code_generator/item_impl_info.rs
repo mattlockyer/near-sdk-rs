@@ -1,5 +1,5 @@
 use crate::ItemImplInfo;
-use syn::export::TokenStream2;
+use proc_macro2::TokenStream as TokenStream2;
 use syn::Ident;
 
 impl ItemImplInfo {
@@ -75,6 +75,43 @@ mod tests {
             pub extern "C" fn method() {
                 near_sdk::env::setup_panic_hook();
                 let contract: Hello = near_sdk::env::state_read().unwrap_or_default();
+                contract.method();
+            }
+        );
+        assert_eq!(expected.to_string(), actual.to_string());
+    }
+
+    #[test]
+    fn owned_no_args_no_return_no_mut() {
+        let impl_type: Type = syn::parse_str("Hello").unwrap();
+        let mut method: ImplItemMethod = syn::parse_str("pub fn method(self) { }").unwrap();
+        let method_info = ImplItemMethodInfo::new(&mut method, impl_type).unwrap();
+        let actual = method_info.method_wrapper();
+        let expected = quote!(
+            #[cfg(target_arch = "wasm32")]
+            #[no_mangle]
+            pub extern "C" fn method() {
+                near_sdk::env::setup_panic_hook();
+                let contract: Hello = near_sdk::env::state_read().unwrap_or_default();
+                contract.method();
+            }
+        );
+        assert_eq!(expected.to_string(), actual.to_string());
+    }
+
+
+    #[test]
+    fn mut_owned_no_args_no_return() {
+        let impl_type: Type = syn::parse_str("Hello").unwrap();
+        let mut method: ImplItemMethod = syn::parse_str("pub fn method(mut self) { }").unwrap();
+        let method_info = ImplItemMethodInfo::new(&mut method, impl_type).unwrap();
+        let actual = method_info.method_wrapper();
+        let expected = quote!(
+            #[cfg(target_arch = "wasm32")]
+            #[no_mangle]
+            pub extern "C" fn method() {
+                near_sdk::env::setup_panic_hook();
+                let mut contract: Hello = near_sdk::env::state_read().unwrap_or_default();
                 contract.method();
             }
         );
